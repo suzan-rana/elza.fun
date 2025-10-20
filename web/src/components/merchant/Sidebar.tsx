@@ -10,12 +10,14 @@ import {
   BarChart3,
   Settings,
   Plus,
-  Home
+  Home,
+  ShoppingCart
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Overview', href: '/', icon: Home },
   { name: 'Products', href: '/products', icon: Package },
+  { name: 'Checkout', href: '/checkout', icon: ShoppingCart },
   { name: 'Wallet Config', href: '/wallet', icon: Wallet },
   { name: 'Subscriptions', href: '/subscriptions', icon: CreditCard },
   { name: 'Transactions', href: '/transactions', icon: BarChart3 },

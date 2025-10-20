@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Product } from '../../products/entities/product.entity';
 import { Subscription } from '../../subscriptions/entities/subscription.entity';
 import { Receipt } from '../../receipts/entities/receipt.entity';
+import { CheckoutConfig } from '../../checkout/entities/checkout-config.entity';
 
 @Entity('merchants')
 export class Merchant {
@@ -55,4 +56,7 @@ export class Merchant {
 
     @OneToMany(() => Receipt, receipt => receipt.merchant)
     receipts: Receipt[];
+
+    @OneToMany(() => CheckoutConfig, checkoutConfig => checkoutConfig.merchant)
+    checkoutConfigs: CheckoutConfig[];
 }

@@ -293,6 +293,35 @@ class ApiClient {
             },
         });
     }
+
+    // Checkout endpoints
+    async getCheckoutConfigs() {
+        return this.request<any[]>('/checkout/configs');
+    }
+
+    async createCheckoutConfig(data: any) {
+        return this.request<any>('/checkout/configs', {
+            method: 'POST',
+            data,
+        });
+    }
+
+    async updateCheckoutConfig(id: string, data: any) {
+        return this.request<any>(`/checkout/configs/${id}`, {
+            method: 'PATCH',
+            data,
+        });
+    }
+
+    async deleteCheckoutConfig(id: string) {
+        return this.request<void>(`/checkout/configs/${id}`, {
+            method: 'DELETE',
+        });
+    }
+
+    async getCheckoutConfig(id: string) {
+        return this.request<any>(`/checkout/configs/${id}`);
+    }
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);
