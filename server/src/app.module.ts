@@ -9,6 +9,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { ReceiptsModule } from './receipts/receipts.module';
 import { EmailModule } from './email/email.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { UploadModule } from './upload/upload.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -36,6 +37,7 @@ import { AppService } from './app.service';
         ReceiptsModule,
         EmailModule,
         DashboardModule,
+        UploadModule,
     ],
     controllers: [AppController],
     providers: [AppService],

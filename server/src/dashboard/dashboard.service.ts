@@ -52,17 +52,60 @@ export class DashboardService {
     }
 
     async getProducts(merchantId: string) {
-        return this.productRepository.find({
+        const products = await this.productRepository.find({
             where: { merchant: { id: merchantId } },
-            order: { createdAt: 'DESC' }
+            order: { createdAt: 'DESC' },
+            take: 5
         });
+
+        // Transform products to include sales and revenue data
+        const productsWithStats = await Promise.all(
+            products.map(async (product) => {
+                // Get sales count for this product
+                const salesCount = await this.receiptRepository.count({
+                    where: { product: { id: product.id } }
+                });
+
+                // Get total revenue for this product
+                const revenueResult = await this.receiptRepository
+                    .createQueryBuilder('receipt')
+                    .select('SUM(receipt.amount)', 'total')
+                    .where('receipt.productId = :productId', { productId: product.id })
+                    .getRawOne();
+
+                return {
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    sales: salesCount,
+                    revenue: parseFloat(revenueResult?.total || '0'),
+                    type: product.type,
+                    isActive: product.isActive,
+                    imageUrl: product.imageUrl,
+                    thumbnailUrl: product.thumbnailUrl,
+                    createdAt: product.createdAt
+                };
+            })
+        );
+
+        return productsWithStats;
     }
 
     async getTransactions(merchantId: string) {
-        return this.receiptRepository.find({
+        const receipts = await this.receiptRepository.find({
             where: { merchantId },
             order: { createdAt: 'DESC' },
-            take: 10
+            take: 10,
+            relations: ['customer', 'product']
         });
+
+        // Transform receipts to transaction format
+        return receipts.map(receipt => ({
+            id: receipt.id,
+            customer: receipt.customer?.email || 'Unknown Customer',
+            product: receipt.product?.name || 'Unknown Product',
+            amount: receipt.amount,
+            date: receipt.createdAt.toISOString()
+        }));
     }
 }

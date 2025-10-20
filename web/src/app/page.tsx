@@ -12,7 +12,8 @@ import {
   CreditCard,
   Eye,
   Plus,
-  RefreshCw
+  RefreshCw,
+  Edit
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -186,14 +187,34 @@ export default function Home() {
           <CardContent>
             <div className="space-y-4">
               {recentProducts.map((product) => (
-                <div key={product.id} className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">{product.name}</p>
-                    <p className="text-sm text-muted-foreground">{product.sales} sales</p>
+                <div key={product.id} className="flex items-center justify-between group">
+                  <div className="flex items-center space-x-3">
+                    {product.imageUrl || product.thumbnailUrl ? (
+                      <img
+                        src={product.imageUrl || product.thumbnailUrl}
+                        alt={product.name}
+                        className="w-10 h-10 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <Package className="h-5 w-5 text-gray-400" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-medium">{product.name}</p>
+                      <p className="text-sm text-muted-foreground">{product.sales || 0} sales</p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium">${product.revenue.toLocaleString()}</p>
-                    <p className="text-sm text-muted-foreground">${product.price}</p>
+                  <div className="flex items-center space-x-2">
+                    <div className="text-right">
+                      <p className="font-medium">${(product.revenue || 0).toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">${product.price}</p>
+                    </div>
+                    <Link href={`/products/${product.id}/edit`}>
+                      <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               ))}
@@ -225,9 +246,8 @@ export default function Home() {
                     <p className="text-sm text-muted-foreground">{transaction.product}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-medium">${transaction.amount}</p>
-                    <p className={`text-sm ${transaction.status === 'completed' ? 'text-green-600' : 'text-yellow-600'
-                      }`}>
+                    <p className="font-medium">${(transaction.amount || 0).toLocaleString()}</p>
+                    <p className={`text-sm ${transaction.status === 'completed' ? 'text-green-600' : 'text-yellow-600'}`}>
                       {transaction.status}
                     </p>
                   </div>

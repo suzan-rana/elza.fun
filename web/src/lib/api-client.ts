@@ -138,7 +138,7 @@ class ApiClient {
 
     async updateProduct(id: string, data: any) {
         return this.request<any>(`/products/${id}`, {
-            method: 'PUT',
+            method: 'PATCH',
             data,
         });
     }
@@ -178,6 +178,120 @@ class ApiClient {
 
     async getRecentTransactions() {
         return this.request<any[]>('/dashboard/transactions');
+    }
+
+    // Upload endpoints
+    async uploadImage(file: File, folder?: string) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        return this.request<any>('/upload/image', {
+            method: 'POST',
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            params: folder ? { folder } : {},
+        });
+    }
+
+    async uploadImages(files: File[], folder?: string) {
+        const formData = new FormData();
+        files.forEach(file => {
+            formData.append('files', file);
+        });
+
+        return this.request<any[]>('/upload/images', {
+            method: 'POST',
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            params: folder ? { folder } : {},
+        });
+    }
+
+    async deleteImage(publicId: string) {
+        return this.request<{ success: boolean; message: string }>(`/upload/image/${publicId}`, {
+            method: 'DELETE',
+        });
+    }
+
+    // Enhanced product creation with file uploads
+    async createProductWithFiles(productData: any, files?: {
+        imageUrl?: File;
+        thumbnailUrl?: File;
+        previewUrl?: File;
+        downloadUrl?: File;
+        videoUrl?: File;
+    }) {
+        const formData = new FormData();
+
+        // Add product data
+        Object.keys(productData).forEach(key => {
+            if (productData[key] !== null && productData[key] !== undefined) {
+                if (typeof productData[key] === 'object') {
+                    formData.append(key, JSON.stringify(productData[key]));
+                } else {
+                    formData.append(key, productData[key].toString());
+                }
+            }
+        });
+
+        // Add files
+        if (files) {
+            Object.keys(files).forEach(key => {
+                if (files[key]) {
+                    formData.append(key, files[key]);
+                }
+            });
+        }
+
+        return this.request<any>('/products', {
+            method: 'POST',
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    }
+
+    async updateProductWithFiles(id: string, productData: any, files?: {
+        imageUrl?: File;
+        thumbnailUrl?: File;
+        previewUrl?: File;
+        downloadUrl?: File;
+        videoUrl?: File;
+    }) {
+        const formData = new FormData();
+
+        // Add product data
+        Object.keys(productData).forEach(key => {
+            if (productData[key] !== null && productData[key] !== undefined) {
+                if (typeof productData[key] === 'object') {
+                    formData.append(key, JSON.stringify(productData[key]));
+                } else {
+                    formData.append(key, productData[key].toString());
+                }
+            }
+        });
+
+        // Add files
+        if (files) {
+            Object.keys(files).forEach(key => {
+                if (files[key]) {
+                    formData.append(key, files[key]);
+                }
+            });
+        }
+
+        return this.request<any>(`/products/${id}`, {
+            method: 'PUT',
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
     }
 }
 

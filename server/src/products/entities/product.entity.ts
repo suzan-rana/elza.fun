@@ -4,7 +4,12 @@ import { Subscription } from '../../subscriptions/entities/subscription.entity';
 import { Receipt } from '../../receipts/entities/receipt.entity';
 
 export enum ProductType {
-    ONE_TIME = 'one_time',
+    DIGITAL_PRODUCT = 'digital_product',
+    COURSE = 'course',
+    EBOOK = 'ebook',
+    MEMBERSHIP = 'membership',
+    BUNDLE = 'bundle',
+    SERVICE = 'service',
     SUBSCRIPTION = 'subscription',
 }
 
@@ -15,6 +20,9 @@ export class Product {
 
     @Column()
     name: string;
+
+    @Column({ nullable: true })
+    slug: string;
 
     @Column({ nullable: true })
     description: string;
@@ -28,12 +36,24 @@ export class Product {
     @Column({
         type: 'enum',
         enum: ProductType,
-        default: ProductType.ONE_TIME,
+        default: ProductType.DIGITAL_PRODUCT,
     })
     type: ProductType;
 
     @Column({ nullable: true })
     imageUrl: string;
+
+    @Column({ nullable: true })
+    thumbnailUrl: string;
+
+    @Column({ nullable: true })
+    previewUrl: string;
+
+    @Column({ nullable: true })
+    downloadUrl: string;
+
+    @Column({ nullable: true })
+    videoUrl: string;
 
     @Column({ nullable: true })
     contentUrl: string;
@@ -55,6 +75,25 @@ export class Product {
 
     @Column({ nullable: true })
     maxSubscriptions: number;
+
+    @Column({ type: 'json', nullable: true })
+    externalLinks: Array<{
+        id: string;
+        title: string;
+        type: 'link' | 'text';
+        content: string;
+        description: string;
+    }>;
+
+    @Column({ type: 'json', nullable: true })
+    gatedContent: Array<{
+        id: string;
+        title: string;
+        type: 'file' | 'text' | 'video' | 'link';
+        content: string;
+        description: string;
+        metadata?: any;
+    }>;
 
     @CreateDateColumn()
     createdAt: Date;

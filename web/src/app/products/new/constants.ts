@@ -97,16 +97,9 @@ export const steps: Step[] = [
     },
     {
         id: 4,
-        title: 'External Links',
-        description: 'Additional resources and links',
+        title: 'Links & Settings',
+        description: 'External links and final settings',
         icon: ExternalLink,
-        fields: ['externalLinks']
-    },
-    {
-        id: 5,
-        title: 'Settings & Preview',
-        description: 'Final settings and preview',
-        icon: Eye,
-        fields: ['isActive']
+        fields: ['externalLinks', 'isActive']
     }
 ];

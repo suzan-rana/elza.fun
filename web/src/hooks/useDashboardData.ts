@@ -19,8 +19,15 @@ interface Product {
     price: number;
     sales: number;
     revenue: number;
-    type: 'one_time' | 'subscription';
+    type: 'one_time' | 'subscription' | 'digital_product' | 'course' | 'ebook' | 'membership' | 'bundle' | 'service';
     isActive: boolean;
+    imageUrl?: string;
+    thumbnailUrl?: string;
+    previewUrl?: string;
+    downloadUrl?: string;
+    videoUrl?: string;
+    contentUrl?: string;
+    createdAt: string;
 }
 
 interface Transaction {
