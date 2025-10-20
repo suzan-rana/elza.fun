@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: elza-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: elza_user
+      POSTGRES_PASSWORD: elza_password
+      POSTGRES_DB: elza_db
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - elza-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U elza_user -d elza_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: elza-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@elza.fun
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - elza-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  elza-network:
+    driver: bridge

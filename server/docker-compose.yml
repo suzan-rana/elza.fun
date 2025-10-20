@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: elza-postgres
+    environment:
+      POSTGRES_DB: elza_db
+      POSTGRES_USER: elza_user
+      POSTGRES_PASSWORD: elza_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - elza-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: elza-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - elza-network
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: elza-server
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://elza_user:elza_password@postgres:5432/elza_db
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=your-super-secret-jwt-key
+      - SOLANA_RPC_URL=https://api.devnet.solana.com
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - elza-network
+
+volumes:
+  postgres_data:
+
+
+networks:
+  elza-network:
+    driver: bridge
