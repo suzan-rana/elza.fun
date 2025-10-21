@@ -48,6 +48,8 @@ interface CheckoutConfig {
     id?: string;
     name: string;
     description?: string;
+    slug?: string;
+    customDomain?: string;
     products: string[];
     checkoutType: 'one_time' | 'subscription' | 'mixed';
     customizations: {
@@ -196,8 +198,20 @@ export default function CheckoutPage() {
         }));
     };
 
-    const copyCheckoutLink = (checkoutId: string) => {
-        const link = `${window.location.origin}/checkout/${checkoutId}`;
+    const copyCheckoutLink = (checkout: CheckoutConfig) => {
+        const baseUrl = process.env.NEXT_PUBLIC_DEFAULT_BASE_CHECKOUT_URL || window.location.origin;
+        const checkoutSlug = checkout.slug || checkout.id;
+
+        if (!checkoutSlug) {
+            addToast({
+                variant: 'destructive',
+                title: 'Error',
+                description: 'No checkout slug or ID available',
+            });
+            return;
+        }
+
+        const link = `${baseUrl}/${checkoutSlug}`;
         navigator.clipboard.writeText(link);
         addToast({
             variant: 'success',
@@ -206,8 +220,20 @@ export default function CheckoutPage() {
         });
     };
 
-    const previewCheckout = (checkoutId: string) => {
-        window.open(`/checkout/${checkoutId}`, '_blank');
+    const previewCheckout = (checkout: CheckoutConfig) => {
+        const baseUrl = process.env.NEXT_PUBLIC_DEFAULT_BASE_CHECKOUT_URL || window.location.origin;
+        const checkoutSlug = checkout.slug || checkout.id;
+
+        if (!checkoutSlug) {
+            addToast({
+                variant: 'destructive',
+                title: 'Error',
+                description: 'No checkout slug or ID available',
+            });
+            return;
+        }
+
+        window.open(`${baseUrl}/checkout/${checkoutSlug}`, '_blank');
     };
 
     if (authLoading || isLoading) {
@@ -281,8 +307,8 @@ export default function CheckoutPage() {
                                             key={id}
                                             onClick={() => handleCheckoutTypeChange(id as any)}
                                             className={`p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md ${formData.checkoutType === id
-                                                    ? 'border-primary bg-primary/5'
-                                                    : 'border-border hover:border-primary/50'
+                                                ? 'border-primary bg-primary/5'
+                                                : 'border-border hover:border-primary/50'
                                                 }`}
                                         >
                                             <div className="flex items-center space-x-3">
@@ -303,8 +329,8 @@ export default function CheckoutPage() {
                                             key={product.id}
                                             onClick={() => handleProductToggle(product.id)}
                                             className={`p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md ${formData.products.includes(product.id)
-                                                    ? 'border-primary bg-primary/5'
-                                                    : 'border-border hover:border-primary/50'
+                                                ? 'border-primary bg-primary/5'
+                                                : 'border-border hover:border-primary/50'
                                                 }`}
                                         >
                                             <div className="flex items-start space-x-3">
@@ -494,16 +520,9 @@ export default function CheckoutPage() {
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => copyCheckoutLink(checkout.id!)}
+                                        onClick={() => copyCheckoutLink(checkout)}
                                     >
                                         <Copy className="h-4 w-4" />
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => previewCheckout(checkout.id!)}
-                                    >
-                                        <Eye className="h-4 w-4" />
                                     </Button>
                                     <Button variant="outline" size="sm">
                                         <Edit3 className="h-4 w-4" />
@@ -526,8 +545,8 @@ export default function CheckoutPage() {
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-muted-foreground">Status:</span>
                                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${checkout.isActive
-                                            ? 'bg-green-100 text-green-800'
-                                            : 'bg-gray-100 text-gray-800'
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-gray-100 text-gray-800'
                                         }`}>
                                         {checkout.isActive ? 'Active' : 'Inactive'}
                                     </span>

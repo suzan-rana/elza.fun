@@ -18,6 +18,12 @@ export class CheckoutConfig {
     @Column({ nullable: true })
     description: string;
 
+    @Column({ unique: true })
+    slug: string;
+
+    @Column({ nullable: true })
+    customDomain: string;
+
     @Column({ type: 'json' })
     products: string[];
 

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsArray, IsEnum, IsBoolean, IsObject, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsArray, IsEnum, IsBoolean, IsObject, MaxLength, Matches } from 'class-validator';
 import { CheckoutType } from '../entities/checkout-config.entity';
 
 export class CreateCheckoutConfigDto {
@@ -13,6 +13,20 @@ export class CreateCheckoutConfigDto {
     @IsString()
     @MaxLength(500)
     description?: string;
+
+    @ApiPropertyOptional({ description: 'Unique slug for the checkout URL (auto-generated if not provided)', maxLength: 100 })
+    @IsOptional()
+    @IsString()
+    @MaxLength(100)
+    @Matches(/^[a-z0-9-]+$/, { message: 'Slug must contain only lowercase letters, numbers, and hyphens' })
+    slug?: string;
+
+    @ApiPropertyOptional({ description: 'Custom domain for the checkout', maxLength: 255 })
+    @IsOptional()
+    @IsString()
+    @MaxLength(255)
+    @Matches(/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, { message: 'Invalid domain format' })
+    customDomain?: string;
 
     @ApiProperty({ description: 'Array of product IDs to include in checkout' })
     @IsArray()
@@ -53,6 +67,20 @@ export class UpdateCheckoutConfigDto {
     @IsString()
     @MaxLength(500)
     description?: string;
+
+    @ApiPropertyOptional({ description: 'Unique slug for the checkout URL', maxLength: 100 })
+    @IsOptional()
+    @IsString()
+    @MaxLength(100)
+    @Matches(/^[a-z0-9-]+$/, { message: 'Slug must contain only lowercase letters, numbers, and hyphens' })
+    slug?: string;
+
+    @ApiPropertyOptional({ description: 'Custom domain for the checkout', maxLength: 255 })
+    @IsOptional()
+    @IsString()
+    @MaxLength(255)
+    @Matches(/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, { message: 'Invalid domain format' })
+    customDomain?: string;
 
     @ApiPropertyOptional({ description: 'Array of product IDs to include in checkout' })
     @IsOptional()

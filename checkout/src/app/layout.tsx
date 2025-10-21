@@ -11,7 +11,7 @@ const sora = Sora({
 
 export const metadata: Metadata = {
   title: "Elza Checkout",
-  description: "Beautiful checkout experience powered by blockchain technology",
+  description: "Beautiful checkout experience powered by solana.",
 };
 
 export default function RootLayout({

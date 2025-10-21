@@ -62,6 +62,8 @@ async function request<T>(path: string, config?: AxiosRequestConfig): Promise<T>
 export const api = {
   // GET requests
   getPublicCheckoutConfig: (id: string) => request<CheckoutConfig>(`/checkout/public/${id}`),
+  getPublicCheckoutConfigBySlug: (slug: string) => request<CheckoutConfig>(`/checkout/public/slug/${slug}`),
+  getPublicCheckoutConfigByDomain: (domain: string) => request<CheckoutConfig>(`/checkout/public/domain/${domain}`),
   getProducts: () => request<Product[]>('/products/public'),
 
   // POST requests (for future use)
@@ -94,6 +96,8 @@ export interface CheckoutConfig {
   id: string;
   name: string;
   description?: string;
+  slug: string;
+  customDomain?: string;
   products: string[];
   checkoutType: 'one_time' | 'subscription' | 'mixed';
   customizations: any;

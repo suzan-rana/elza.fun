@@ -13,13 +13,29 @@ export class CheckoutService {
 
     async create(merchantId: string, createCheckoutConfigDto: CreateCheckoutConfigDto): Promise<CheckoutConfig> {
         try {
+            // Generate slug if not provided
+            const slug = createCheckoutConfigDto.slug || this.generateSlug(createCheckoutConfigDto.name);
+
+            // Check if slug already exists
+            const existingSlug = await this.checkoutConfigRepository.findOne({
+                where: { slug }
+            });
+
+            if (existingSlug) {
+                throw new BadRequestException('Slug already exists. Please choose a different slug.');
+            }
+
             const checkoutConfig = this.checkoutConfigRepository.create({
                 ...createCheckoutConfigDto,
+                slug,
                 merchant: { id: merchantId }
             });
 
             return await this.checkoutConfigRepository.save(checkoutConfig);
         } catch (error) {
+            if (error instanceof BadRequestException) {
+                throw error;
+            }
             throw new BadRequestException(`Failed to create checkout configuration: ${error.message}`);
         }
     }
@@ -79,5 +95,64 @@ export class CheckoutService {
         }
 
         return checkoutConfig;
+    }
+
+    // Public method to get checkout config by slug (for public checkout pages)
+    async findPublicConfigBySlug(slug: string): Promise<CheckoutConfig> {
+        const checkoutConfig = await this.checkoutConfigRepository.findOne({
+            where: {
+                slug,
+                isActive: true
+            },
+            relations: ['merchant']
+        });
+
+        if (!checkoutConfig) {
+            throw new NotFoundException('Checkout configuration not found or inactive');
+        }
+
+        return checkoutConfig;
+    }
+
+    // Public method to get checkout config by custom domain
+    async findPublicConfigByDomain(domain: string): Promise<CheckoutConfig> {
+        const checkoutConfig = await this.checkoutConfigRepository.findOne({
+            where: {
+                customDomain: domain,
+                isActive: true
+            },
+            relations: ['merchant']
+        });
+
+        if (!checkoutConfig) {
+            throw new NotFoundException('Checkout configuration not found or inactive');
+        }
+
+        return checkoutConfig;
+    }
+
+    // Generate a URL-friendly slug from a name
+    private generateSlug(name: string): string {
+        return name
+            .toLowerCase()
+            .replace(/[^a-z0-9 -]/g, '') // Remove special characters
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+            .trim()
+            .substring(0, 50); // Limit length
+    }
+
+    // Check if slug is available
+    async isSlugAvailable(slug: string, excludeId?: string): Promise<boolean> {
+        const query: any = { slug };
+        if (excludeId) {
+            query.id = { $ne: excludeId };
+        }
+
+        const existing = await this.checkoutConfigRepository.findOne({
+            where: query
+        });
+
+        return !existing;
     }
 }
