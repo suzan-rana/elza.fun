@@ -57,6 +57,14 @@ export class ProductsService {
         });
     }
 
+    async findAllActive(): Promise<Product[]> {
+        return this.productRepository.find({
+            where: { isActive: true },
+            order: { createdAt: 'DESC' },
+            relations: ['merchant']
+        });
+    }
+
     async findOne(merchantId: string, id: string): Promise<Product> {
         const product = await this.productRepository.findOne({
             where: {

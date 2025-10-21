@@ -9,8 +9,6 @@ import { UpdateProductDto } from './dto/update-product.dto';
 
 @ApiTags('Products')
 @Controller('products')
-@UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
 export class ProductsController {
     constructor(
         private readonly productsService: ProductsService,
@@ -18,6 +16,8 @@ export class ProductsController {
     ) { }
 
     @Post()
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
     @UseInterceptors(FileFieldsInterceptor([
         { name: 'imageUrl', maxCount: 1 },
         { name: 'thumbnailUrl', maxCount: 1 },
@@ -106,18 +106,31 @@ export class ProductsController {
     }
 
     @Get()
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Get all products' })
     findAll(@Request() req) {
         return this.productsService.findByMerchant(req.user.sub);
     }
 
+    // Public endpoint for checkout pages (no auth required)
+    @Get('public')
+    @ApiOperation({ summary: 'Get all active products for public checkout' })
+    async findAllPublic() {
+        return this.productsService.findAllActive();
+    }
+
     @Get(':id')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Get product by ID' })
     findOne(@Request() req, @Param('id') id: string) {
         return this.productsService.findOne(req.user.sub, id);
     }
 
     @Put(':id')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
     @UseInterceptors(FileFieldsInterceptor([
         { name: 'imageUrl', maxCount: 1 },
         { name: 'thumbnailUrl', maxCount: 1 },
@@ -181,6 +194,8 @@ export class ProductsController {
     }
 
     @Patch(':id')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Update a product (JSON only)' })
     async updateJson(
         @Request() req,
@@ -204,6 +219,8 @@ export class ProductsController {
     }
 
     @Delete(':id')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Delete a product' })
     remove(@Request() req, @Param('id') id: string) {
         return this.productsService.remove(req.user.sub, id);

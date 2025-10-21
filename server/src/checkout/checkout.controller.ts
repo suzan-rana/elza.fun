@@ -6,30 +6,36 @@ import { JwtAuthGuard } from '../auth/strategies/jwt.strategy';
 
 @ApiTags('checkout')
 @Controller('checkout')
-@UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
 export class CheckoutController {
     constructor(private readonly checkoutService: CheckoutService) { }
 
     @Post('configs')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Create a new checkout configuration' })
     async create(@Request() req, @Body() createCheckoutConfigDto: CreateCheckoutConfigDto) {
         return this.checkoutService.create(req.user.sub, createCheckoutConfigDto);
     }
 
     @Get('configs')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Get all checkout configurations for the merchant' })
     async findAll(@Request() req) {
         return this.checkoutService.findAll(req.user.sub);
     }
 
     @Get('configs/:id')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Get a specific checkout configuration' })
     async findOne(@Request() req, @Param('id') id: string) {
         return this.checkoutService.findOne(req.user.sub, id);
     }
 
     @Patch('configs/:id')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Update a checkout configuration' })
     async update(
         @Request() req,
@@ -40,6 +46,8 @@ export class CheckoutController {
     }
 
     @Delete('configs/:id')
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
     @ApiOperation({ summary: 'Delete a checkout configuration' })
     async remove(@Request() req, @Param('id') id: string) {
         await this.checkoutService.remove(req.user.sub, id);
