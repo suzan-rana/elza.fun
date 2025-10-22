@@ -8,8 +8,8 @@ WORKDIR /app
 # Install all deps (including dev) for the build
 COPY package*.json ./
 RUN npm ci \
-    # ensure cloudinary and its types are available for the TypeScript build
-    && npm i --no-save cloudinary @types/cloudinary
+    # ensure cloudinary is available for the TypeScript build (types are built-in)
+    && npm i --no-save cloudinary
 
 # Copy source and build
 COPY . .
@@ -29,4 +29,5 @@ COPY --from=builder /app/dist ./dist
 # If you have runtime assets (public, prisma, etc.), copy them here, e.g.:
 # COPY --from=builder /app/public ./public
 
+EXPOSE 3001
 CMD ["npm", "run", "start:prod"]
