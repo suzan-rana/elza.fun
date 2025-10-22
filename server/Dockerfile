@@ -7,7 +7,9 @@ WORKDIR /app
 
 # Install all deps (including dev) for the build
 COPY package*.json ./
-RUN npm ci
+RUN npm ci \
+    # ensure cloudinary and its types are available for the TypeScript build
+    && npm i --no-save cloudinary @types/cloudinary
 
 # Copy source and build
 COPY . .
