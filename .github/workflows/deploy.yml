@@ -1,0 +1,78 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - deploy # for deployments
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.image.outputs.image_tag }}
+      owner_lower: ${{ steps.image.outputs.owner_lower }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache-server
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GH_ACTOR }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      - name: Set image tag
+        id: image
+        run: |
+          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          REPO_NAME=$(echo "${{ github.repository }}" | awk -F/ '{print $2}')
+          IMAGE_TAG="ghcr.io/${OWNER_LOWER}/elza-server:${{ github.sha }}"
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+          echo "owner_lower=${OWNER_LOWER}" >> $GITHUB_OUTPUT
+          echo "repo_name=${REPO_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./server
+          file: ./server/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.image.outputs.image_tag }}
+            ghcr.io/${{ steps.image.outputs.owner_lower }}/elza-server:latest
+          cache-from: type=local,src=/tmp/.buildx-cache-server
+          cache-to: type=local,dest=/tmp/.buildx-cache-server,mode=max
+
+  trigger-dokploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Dokploy deployment
+        env:
+          DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+          IMAGE: ${{ needs.build-and-push.outputs.image_tag }}
+        run: |
+          if [[ -n "$DEPLOY_WEBHOOK_URL" ]]; then
+            echo "Triggering deployment via webhook"
+            curl -sS -X POST "$DEPLOY_WEBHOOK_URL" \
+              -H "Content-Type: application/json" \
+              -d "{\"image\":\"${IMAGE}\"}" \
+              | jq .
+            exit 0
+          fi
