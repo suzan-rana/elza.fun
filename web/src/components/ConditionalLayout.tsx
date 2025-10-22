@@ -18,17 +18,25 @@ export function ConditionalLayout({ children }: ConditionalLayoutProps) {
     const router = useRouter();
     const pathname = usePathname();
 
+    // Public routes that should NOT enforce wallet connection
+    const isPublicRoute = pathname === '/wallet-connect';
+
     // Check if current route should hide the sidebar
     const hideSidebar = pathname?.includes('/products/new') || pathname?.includes('/products/') && pathname?.includes('/edit');
 
     useEffect(() => {
-        if (!connected) {
+        if (!connected && !isPublicRoute) {
             router.push('/wallet-connect');
         }
-    }, [connected, router]);
+    }, [connected, isPublicRoute, router]);
 
-    if (!connected) {
+    if (!connected && !isPublicRoute) {
         return null; // Will redirect to wallet-connect page
+    }
+
+    // Allow wallet-connect page to render without layout chrome
+    if (isPublicRoute) {
+        return <>{children}</>;
     }
 
     // If sidebar should be hidden, render full-width layout

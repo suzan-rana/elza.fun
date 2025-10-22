@@ -12,9 +12,11 @@ import {
     RefreshCw
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 
 export default function WalletConnectionPage() {
-    const { connected, connecting, connect, disconnect } = useWallet();
+    const { connected, connecting, connect, disconnect, wallet } = useWallet();
+    const { setVisible: setWalletModalVisible } = useWalletModal();
     const router = useRouter();
     const [isRetrying, setIsRetrying] = useState(false);
 
@@ -32,9 +34,18 @@ export default function WalletConnectionPage() {
     const handleConnect = async () => {
         try {
             setIsRetrying(true);
+            // If no wallet is selected, open the modal instead of calling connect()
+            if (!wallet) {
+                setWalletModalVisible(true);
+                return;
+            }
             await connect();
         } catch (error) {
             console.error('Failed to connect wallet:', error);
+            // If the error indicates no wallet selected, prompt the modal
+            if ((error as any)?.name === 'WalletNotSelectedError') {
+                setWalletModalVisible(true);
+            }
         } finally {
             setIsRetrying(false);
         }
@@ -119,7 +130,7 @@ export default function WalletConnectionPage() {
                                     ) : (
                                         <>
                                             <Wallet className="mr-2 h-4 w-4" />
-                                            Connect Wallet
+                                            {wallet ? 'Connect Wallet' : 'Choose Wallet'}
                                         </>
                                     )}
                                 </Button>
@@ -150,9 +161,9 @@ export default function WalletConnectionPage() {
                                 2
                             </div>
                             <div>
-                                <p className="font-medium">Click Connect Wallet</p>
+                                <p className="font-medium">Click Choose Wallet</p>
                                 <p className="text-sm text-muted-foreground">
-                                    Click the button above to open your wallet
+                                    Click the button above to select and open your wallet
                                 </p>
                             </div>
                         </div>
