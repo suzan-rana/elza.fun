@@ -2,101 +2,141 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
+    <div className="min-h-screen bg-white text-gray-900">
+      {/* Hero */}
+      <section className="max-w-5xl mx-auto px-6 pt-16 pb-10 text-center">
+        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight">
+          Elza Checkout
+        </h1>
+        <p className="mt-4 text-base sm:text-lg text-gray-600">
+          A simple, fast, and secure way to sell digital products and subscriptions on Solana.
+        </p>
+        <div className="mt-6 flex items-center justify-center gap-3">
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/checkout/demo"
+            className="inline-flex items-center justify-center rounded-lg bg-gray-900 px-5 py-3 text-white text-sm font-medium hover:bg-gray-800 transition-colors"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+            View Demo Checkout
           </a>
           <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="https://docs.solana.com/" target="_blank" rel="noreferrer"
+            className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-5 py-3 text-sm font-medium hover:bg-gray-50 transition-colors"
           >
-            Read our docs
+            Learn about Solana
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* What is Elza */}
+      <section className="max-w-5xl mx-auto px-6 py-8 grid gap-6 sm:grid-cols-2">
+        <div className="rounded-xl border border-gray-200 p-6 bg-white">
+          <h2 className="text-xl font-semibold">What is Elza?</h2>
+          <p className="mt-3 text-gray-600 text-sm leading-relaxed">
+            Elza is a checkout platform that lets creators and businesses sell digital goods, subscriptions,
+            and access tokens with a delightful checkout experience. It focuses on conversion, speed, and
+            a modern buyer experience while leveraging Solana&apos;s low fees and high throughput.
+          </p>
+        </div>
+        <div className="rounded-xl border border-gray-200 p-6 bg-white">
+          <h2 className="text-xl font-semibold">Why Solana?</h2>
+          <p className="mt-3 text-gray-600 text-sm leading-relaxed">
+            Solana offers fast confirmations and negligible fees, making it ideal for commerce. With Elza,
+            payments and tokenized entitlements can settle quickly while keeping the buyer experience smooth
+            on mobile and desktop.
+          </p>
+        </div>
+      </section>
+
+      {/* What is Elza Checkout */}
+      <section className="max-w-5xl mx-auto px-6 py-8">
+        <div className="rounded-xl border border-gray-200 p-6 bg-white">
+          <h2 className="text-xl font-semibold">What is Elza Checkout?</h2>
+          <p className="mt-3 text-gray-600 text-sm leading-relaxed">
+            Elza Checkout is a hosted payment page you can share with your audience. It bundles product details,
+            pricing, and a sleek payment flow. You configure products and pricing in your dashboard; Elza generates
+            a unique, human‑readable <span className="font-medium">checkout slug</span> and link that you can share anywhere.
+          </p>
+          <ul className="mt-4 text-gray-700 text-sm list-disc pl-5 space-y-2">
+            <li>Supports one‑time and recurring subscriptions.</li>
+            <li>Works on custom domains or elza.fun links.</li>
+            <li>Optimized for mobile and desktop buyers.</li>
+          </ul>
+        </div>
+      </section>
+
+      {/* How to use Elza */}
+      <section className="max-w-5xl mx-auto px-6 pb-8">
+        <div className="rounded-xl border border-gray-200 p-6 bg-white">
+          <h2 className="text-xl font-semibold">How to use Elza</h2>
+          <ol className="mt-3 text-gray-700 text-sm list-decimal pl-5 space-y-2">
+            <li>Create products with name, price, and optional subscription interval.</li>
+            <li>Generate a checkout <span className="font-medium">slug</span> (or let Elza auto‑create one).</li>
+            <li>Share your checkout link or connect a custom domain.</li>
+            <li>Buyers pay with a Solana wallet; you get fast settlement and low fees.</li>
+          </ol>
+          <div className="mt-5 text-sm text-gray-600">
+            Tip: Use <code className="px-1 py-0.5 rounded bg-gray-100">NEXT_PUBLIC_DEFAULT_BASE_CHECKOUT_URL</code> in your app
+            to generate shareable links like <code className="px-1 py-0.5 rounded bg-gray-100">https://yourdomain.com/your-checkout-slug</code>.
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="max-w-5xl mx-auto px-6 pb-8">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-xl border border-gray-200 p-6 bg-white">
+            <h3 className="text-base font-semibold">Hosted & Fast</h3>
+            <p className="mt-2 text-sm text-gray-600">No code required. Share your link and start selling in minutes.</p>
+          </div>
+          <div className="rounded-xl border border-gray-200 p-6 bg-white">
+            <h3 className="text-base font-semibold">One‑time & Recurring</h3>
+            <p className="mt-2 text-sm text-gray-600">Sell both one‑off purchases and subscriptions with a single flow.</p>
+          </div>
+          <div className="rounded-xl border border-gray-200 p-6 bg-white">
+            <h3 className="text-base font-semibold">Custom Domains</h3>
+            <p className="mt-2 text-sm text-gray-600">Bring your brand using your own domain or subdomain.</p>
+          </div>
+          <div className="rounded-xl border border-gray-200 p-6 bg-white">
+            <h3 className="text-base font-semibold">Low Fees</h3>
+            <p className="mt-2 text-sm text-gray-600">Solana&apos;s low fees keep more earnings in your pocket.</p>
+          </div>
+          <div className="rounded-xl border border-gray-200 p-6 bg-white">
+            <h3 className="text-base font-semibold">Mobile‑Optimized</h3>
+            <p className="mt-2 text-sm text-gray-600">Beautiful on every device with a conversion‑first design.</p>
+          </div>
+          <div className="rounded-xl border border-gray-200 p-6 bg-white">
+            <h3 className="text-base font-semibold">Secure</h3>
+            <p className="mt-2 text-sm text-gray-600">Best practices and reliable infrastructure for peace of mind.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="max-w-5xl mx-auto px-6 pb-16">
+        <div className="rounded-xl border border-gray-200 p-6 bg-white">
+          <h2 className="text-xl font-semibold">FAQ</h2>
+          <div className="mt-4 space-y-4">
+            <div>
+              <p className="text-sm font-medium">Do buyers need a Solana wallet?</p>
+              <p className="mt-1 text-sm text-gray-600">Yes, they&apos;ll connect a wallet like Phantom or Solflare during checkout.</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Can I use my own domain?</p>
+              <p className="mt-1 text-sm text-gray-600">Yes. Connect a custom domain to host your checkout under your brand.</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Does Elza support subscriptions?</p>
+              <p className="mt-1 text-sm text-gray-600">Yes. Configure monthly or yearly plans; Elza marks recurring items clearly.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer blurb */}
+      <footer className="border-t border-gray-200">
+        <div className="max-w-5xl mx-auto px-6 py-8 text-center text-xs text-gray-500">
+          Built with ❤️ on Solana • Elza Checkout
+        </div>
       </footer>
     </div>
   );
