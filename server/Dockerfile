@@ -29,4 +29,5 @@ COPY --from=builder /app/dist ./dist
 # If you have runtime assets (public, prisma, etc.), copy them here, e.g.:
 # COPY --from=builder /app/public ./public
 
+
 CMD ["npm", "run", "start:prod"]
