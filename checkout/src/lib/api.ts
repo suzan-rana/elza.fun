@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
 
@@ -67,14 +67,18 @@ export const api = {
   getProducts: () => request<Product[]>('/products/public'),
 
   // POST requests (for future use)
-  createOrder: (orderData: any) => axiosInstance.post('/orders', orderData),
-  processPayment: (paymentData: any) => axiosInstance.post('/payments', paymentData),
+  createOrder: <TBody extends Record<string, unknown>, TResp = unknown>(orderData: TBody): Promise<AxiosResponse<TResp>> =>
+    axiosInstance.post<TResp>('/orders', orderData),
+  processPayment: <TBody extends Record<string, unknown>, TResp = unknown>(paymentData: TBody): Promise<AxiosResponse<TResp>> =>
+    axiosInstance.post<TResp>('/payments', paymentData),
 
   // PUT requests (for future use)
-  updateOrder: (id: string, orderData: any) => axiosInstance.put(`/orders/${id}`, orderData),
+  updateOrder: <TBody extends Record<string, unknown>, TResp = unknown>(id: string, orderData: TBody): Promise<AxiosResponse<TResp>> =>
+    axiosInstance.put<TResp>(`/orders/${id}`, orderData),
 
   // DELETE requests (for future use)
-  cancelOrder: (id: string) => axiosInstance.delete(`/orders/${id}`),
+  cancelOrder: <TResp = unknown>(id: string): Promise<AxiosResponse<TResp>> =>
+    axiosInstance.delete<TResp>(`/orders/${id}`),
 };
 
 // Type definitions for better TypeScript support
@@ -90,6 +94,8 @@ export interface Product {
   isActive: boolean;
   subscriptionInterval?: string;
   subscriptionPrice?: number;
+  maxSubscriptions?: number; // optional, used in UI when present
+  createdAt?: string; // optional, used for display
 }
 
 export interface CheckoutConfig {
@@ -100,7 +106,7 @@ export interface CheckoutConfig {
   customDomain?: string;
   products: string[];
   checkoutType: 'one_time' | 'subscription' | 'mixed';
-  customizations: any;
+  customizations: Record<string, unknown>;
   merchant: {
     businessName: string;
     email: string;
